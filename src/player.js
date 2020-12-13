@@ -10,34 +10,42 @@ function getData() {
         GUIDE_URL,
         (json) => {
             guide = json.data;
-            $("body").append("<style>" + guide.css+ "</style>"
-                +"<div  class='sttip'> " +
-                "<div class='tooltip in'> " +
-                "<div class='tooltip-arrow'></div>" +
-                "<div class='tooltip-arrow second-arrow'></div>" +
-                "<div class='popover-inner'>" +
-                guide.tiplates.tip + guide.tiplates.hoverTip+
-                "</div>" +
-                "</div>" +
-                "</div>");
             steps = guide.structure.steps;
-            $("span[data-iridize-role='stepsCount']").text(steps.length);
-            $("span[data-iridize-role='stepCount']").text(curStep);
+            $(document.body).append("<style>" + guide.css+ "</style>");
             setContent();
-            $("a[data-iridize-role='nextBt']").click(handleNextClick);
-            $("button[data-iridize-role='prevBt']").click(handlePrevClick);
         }
     );
 }
 
 function setContent() {
+    $(".sttip").remove();
+    let selector;
+    let content;
     if(steps[curStep-1].action.type === 'tip') {
-        $("div[data-iridize-id='content']").html(steps[curStep-1].action.contents["#content"]);
+        selector = steps[curStep-1].action.selector;
+        content = steps[curStep-1].action.contents["#content"];
+    } else {
+        content = '<p>Thank you for Taking guided learning</p>';
+        selector = 'body';
     }
+    $(selector).after("<div  class='sttip'> " +
+        "<div class='tooltip in'> " +
+        "<div class='tooltip-arrow'></div>" +
+        "<div class='tooltip-arrow second-arrow'></div>" +
+        "<div class='popover-inner'>" +
+        guide.tiplates.tip +
+        "</div>" +
+        "</div>" +
+        "</div>");
+    $("span[data-iridize-role='stepsCount']").text(steps.length);
+    $("span[data-iridize-role='stepCount']").text(curStep);
+    $("a[data-iridize-role='nextBt']").click(handleNextClick);
+    $("button[data-iridize-role='prevBt']").click(handlePrevClick);
+    $("div[data-iridize-id='content']").html(content);
 }
 
 function handleNextClick() {
-    $("span[data-iridize-role='stepCount']").text(++curStep);
+    ++curStep;
     setContent();
     if(curStep > 1) {
         $("button[data-iridize-role='prevBt']").removeClass('default-prev-btn');
@@ -48,10 +56,10 @@ function handleNextClick() {
 }
 
 function handlePrevClick() {
-    $("span[data-iridize-role='stepCount']").text(--curStep);
+    --curStep;
     setContent();
-    if(curStep === 1) {
-        $("button[data-iridize-role='prevBt']").addClass('default-prev-btn');
+    if(curStep !== 1) {
+        $("button[data-iridize-role='prevBt']").removeClass('default-prev-btn');
     }
     if(curStep < steps.length) {
         $("a[data-iridize-role='nextBt']").css({display:'block'})
@@ -72,7 +80,5 @@ function handlePrevClick() {
 })(document.createElement('link'), 'https://guidedlearning.oracle.com/player/latest/static/css/stTip.css');
 
 module.exports = {
-    getData,
-    handleNextClick,
-    handlePrevClick
+    getData
 }
