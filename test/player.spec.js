@@ -86,6 +86,4 @@ describe('Guided learning', function () {
             expect(position.top).toEqual(50);
         });
     })
-
-
 });
