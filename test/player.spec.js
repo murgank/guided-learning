@@ -14,6 +14,9 @@ describe('Guided learning', function () {
         const mockJson = {
             data: {
                 css: 'some-css',
+                structure: {
+                    steps: []
+                },
                 tiplates: {
                     tip: 'some-tip',
                     hoverTip: 'hover-tip'
