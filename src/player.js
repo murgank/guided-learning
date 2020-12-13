@@ -20,31 +20,40 @@ function getData() {
                 "</div>" +
                 "</div>" +
                 "</div>");
-            steps = guide.structure.steps.length;
-            $("span[data-iridize-role='stepsCount']").text(steps);
+            steps = guide.structure.steps;
+            $("span[data-iridize-role='stepsCount']").text(steps.length);
             $("span[data-iridize-role='stepCount']").text(curStep);
+            setContent();
             $("a[data-iridize-role='nextBt']").click(handleNextClick);
             $("button[data-iridize-role='prevBt']").click(handlePrevClick);
         }
     );
 }
 
+function setContent() {
+    if(steps[curStep-1].action.type === 'tip') {
+        $("div[data-iridize-id='content']").html(steps[curStep-1].action.contents["#content"]);
+    }
+}
+
 function handleNextClick() {
     $("span[data-iridize-role='stepCount']").text(++curStep);
+    setContent();
     if(curStep > 1) {
         $("button[data-iridize-role='prevBt']").removeClass('default-prev-btn');
     }
-    if(curStep === steps) {
+    if(curStep === steps.length) {
         $("a[data-iridize-role='nextBt']").css({display:'none'})
     }
 }
 
 function handlePrevClick() {
     $("span[data-iridize-role='stepCount']").text(--curStep);
+    setContent();
     if(curStep === 1) {
         $("button[data-iridize-role='prevBt']").addClass('default-prev-btn');
     }
-    if(curStep < steps) {
+    if(curStep < steps.length) {
         $("a[data-iridize-role='nextBt']").css({display:'block'})
     }
 }
