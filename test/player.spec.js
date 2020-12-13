@@ -15,7 +15,9 @@ describe('Guided learning', function () {
             data: {
                 css: 'some-css',
                 structure: {
-                    steps: []
+                    steps: [{
+                        action:{}
+                    }]
                 },
                 tiplates: {
                     tip: 'some-tip',
@@ -31,6 +33,59 @@ describe('Guided learning', function () {
         expect(document.body.innerHTML).toBe('<style>some-css</style><div class="sttip">' +
             ' <div class="tooltip in"> <div class="tooltip-arrow"></div>' +
             '<div class="tooltip-arrow second-arrow"></div>' +
-            '<div class="popover-inner">some-tiphover-tip</div></div></div>')
+            '<div class="popover-inner">some-tip</div></div></div>')
     });
+
+    describe('tooltip position based on screen size and element position',() => {
+        const tooltipDimension = {
+            height: 20,
+            width: 100
+        }
+        const elementPosition = {
+            left: 50,
+            top: 50,
+            height: 20,
+            width: 100
+        }
+        const { getBestPosition } = require("../src/player");
+
+        it('should make tooltip align right if position is available', function () {
+            const bodyDimension = {
+                width: 250,
+                height: 200
+            }
+
+            const position = getBestPosition(elementPosition,tooltipDimension,bodyDimension);
+
+            expect(position.left).toEqual(150);
+            expect(position.top).toEqual(50);
+        });
+
+        it('should make tooltip align bottom if position right is not available', function () {
+            const bodyDimension = {
+                width: 200,
+                height: 200
+            }
+
+            const position = getBestPosition(elementPosition,tooltipDimension,bodyDimension);
+
+            expect(position.left).toEqual(50);
+            expect(position.top).toEqual(70);
+        });
+
+        it('should make tooltip align left if position right and bottom is not available', function () {
+            elementPosition.left = 150;
+            const bodyDimension = {
+                width: 250,
+                height: 70
+            }
+
+            const position = getBestPosition(elementPosition,tooltipDimension,bodyDimension);
+
+            expect(position.left).toEqual(50);
+            expect(position.top).toEqual(50);
+        });
+    })
+
+
 });
